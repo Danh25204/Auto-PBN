@@ -1,0 +1,23 @@
+{
+  "name": "auto-pbn-server",
+  "version": "1.0.0",
+  "description": "Auto PBN Poster — Express backend",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "axios-retry": "^4.4.0",
+    "cors": "^2.8.5",
+    "csv-parse": "^5.5.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "p-queue": "^8.0.1",
+    "uuid": "^10.0.0",
+    "zod": "^3.23.8"
+  }
+}
