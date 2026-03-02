@@ -16,11 +16,11 @@ jobsRouter.post('/', (req, res) => {
     });
   }
 
-  const { sites, post } = parsed.data;
+  const { siteUrl, posts } = parsed.data;
   const jobId = uuidv4();
 
-  startJob(jobId, sites, post);
-  console.log(`[jobs] Started job ${jobId} → ${sites.length} sites`);
+  startJob(jobId, siteUrl, posts);
+  console.log(`[jobs] Started job ${jobId} → ${siteUrl} (${posts.length} posts)`);
 
   return res.status(202).json({ jobId });
 });
@@ -38,21 +38,19 @@ jobsRouter.get('/:id/stream', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no'); // nginx: disable buffering
+  res.setHeader('X-Accel-Buffering', 'no');
   res.flushHeaders();
 
   const send = (event, data) => {
     res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
   };
 
-  // Replay any results that arrived before the client connected
-  for (const result of job.results) {
-    const event = result.status === 'ok' ? 'progress' : 'progress';
-    send(event, { ...result, index: job.results.indexOf(result) + 1, total: job.total });
+  // Replay buffered events for late-connecting clients
+  for (const { event, data } of job.results) {
+    send(event, data);
   }
 
   if (job.status === 'done') {
-    send('done', { completed: job.completed, failed: job.failed, total: job.total });
     return res.end();
   }
 
@@ -60,7 +58,7 @@ jobsRouter.get('/:id/stream', (req, res) => {
   const listener = (event, data) => send(event, data);
   job.listeners.add(listener);
 
-  // Heartbeat every 20s to prevent proxy timeouts
+  // Heartbeat every 20s
   const heartbeat = setInterval(() => res.write(': heartbeat\n\n'), 20_000);
 
   req.on('close', () => {

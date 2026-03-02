@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 
 /**
- * Opens an SSE stream for a job and collects progress events.
+ * Opens an SSE stream for a job and collects all events.
+ * Each event: { type: 'status'|'progress'|'error', data: object }
  *
  * @param {string|null} jobId
  * @returns {{ events: Array, summary: object|null, running: boolean }}
@@ -15,7 +16,6 @@ export function useJobStream(jobId) {
   useEffect(() => {
     if (!jobId) return;
 
-    // Reset state for new job
     setEvents([]);
     setSummary(null);
     setRunning(true);
@@ -23,10 +23,12 @@ export function useJobStream(jobId) {
     const es = new EventSource(`/api/jobs/${jobId}/stream`);
     esRef.current = es;
 
-    es.addEventListener('progress', (e) => {
-      const data = JSON.parse(e.data);
-      setEvents((prev) => [...prev, data]);
-    });
+    const addEvent = (type, data) =>
+      setEvents((prev) => [...prev, { type, data }]);
+
+    es.addEventListener('status', (e) => addEvent('status', JSON.parse(e.data)));
+    es.addEventListener('progress', (e) => addEvent('progress', JSON.parse(e.data)));
+    es.addEventListener('error-event', (e) => addEvent('error', JSON.parse(e.data)));
 
     es.addEventListener('done', (e) => {
       const data = JSON.parse(e.data);
@@ -40,9 +42,7 @@ export function useJobStream(jobId) {
       es.close();
     };
 
-    return () => {
-      es.close();
-    };
+    return () => es.close();
   }, [jobId]);
 
   return { events, summary, running };

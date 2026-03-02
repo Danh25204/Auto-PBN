@@ -1,11 +1,14 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
+import https from 'https';
 
 const TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT_MS || '15000', 10);
 const RETRIES = parseInt(process.env.REQUEST_RETRIES || '2', 10);
 
-// Apply retry logic globally to all axios instances created here
-const client = axios.create({ timeout: TIMEOUT });
+// Allow self-signed / expired SSL certs common on PBN sites
+const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+
+const client = axios.create({ timeout: TIMEOUT, httpsAgent });
 
 axiosRetry(client, {
   retries: RETRIES,
@@ -27,6 +30,7 @@ export async function createWpPost(site, post) {
   const { title, content, status } = post;
 
   const apiUrl = `${url}/wp-json/wp/v2/posts`;
+  console.log(`[wpApi] POST → ${apiUrl} (user: ${username})`);
 
   // Basic auth: username:app_password (spaces stripped — WP format is fine either way)
   const token = Buffer.from(`${username}:${appPassword}`).toString('base64');
