@@ -251,12 +251,12 @@ No credentials stored here — all runtime only.
 | Phase | Scope                                                                 | Status     |
 |-------|-----------------------------------------------------------------------|------------|
 | 1     | Spec & PRD                                                           | ✅ Done     |
-| 2a    | Backend scaffold: Express server, `/api/jobs`, queue, WP REST call   | 🔲 TODO    |
-| 2b    | SSE stream endpoint, `posts.txt` logger                              | 🔲 TODO    |
-| 2c    | Frontend: SitesPanel + ContentPanel + LogPanel                       | 🔲 TODO    |
-| 2d    | CSV upload parsing                                                    | 🔲 TODO    |
-| 2e    | Integration + end-to-end test                                         | 🔲 TODO    |
-| 3     | Error hardening, input validation, download endpoint, README          | 🔲 TODO    |
+| 2a    | Backend scaffold: Express server, `/api/jobs`, queue, WP REST call   | ✅ Done     |
+| 2b    | SSE stream endpoint, `posts.txt` logger                              | ✅ Done     |
+| 2c    | Frontend: SitesPanel + ContentPanel + LogPanel                       | ✅ Done     |
+| 2d    | CSV upload parsing                                                    | ✅ Done     |
+| 2e    | Integration + end-to-end test                                         | ✅ Done     |
+| 3     | Error hardening, input validation, download endpoint, README          | ✅ Done     |
 
 ---
 
