@@ -1,0 +1,16 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Env files (never commit real credentials)
+server/.env
+
+# Build output
+client/dist/
+
+# Logs
+server/data/posts.txt
+
+# OS
+.DS_Store
+Thumbs.db
