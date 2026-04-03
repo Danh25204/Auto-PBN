@@ -1,3 +1,58 @@
+﻿import { useRef, useEffect } from 'react';
+
+function RichContentEditor({ value, onChange, placeholder, disabled }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref.current && ref.current.innerHTML !== value) {
+      ref.current.innerHTML = value || '';
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleInput = () => {
+    if (ref.current) onChange(ref.current.innerHTML);
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const html = e.clipboardData.getData('text/html');
+    const text = e.clipboardData.getData('text/plain');
+
+    if (html) {
+      document.execCommand('insertHTML', false, html);
+    } else if (text) {
+      const escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n\n+/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+      document.execCommand('insertHTML', false, `<p>${escaped}</p>`);
+    }
+    if (ref.current) onChange(ref.current.innerHTML);
+  };
+
+  return (
+    <div
+      ref={ref}
+      contentEditable={!disabled}
+      suppressContentEditableWarning
+      onInput={handleInput}
+      onPaste={handlePaste}
+      data-placeholder={placeholder}
+      className={[
+        'input-field min-h-[120px] overflow-y-auto',
+        '[&_p]:mb-2 [&_h1]:font-bold [&_h1]:text-xl [&_h2]:font-bold [&_h2]:text-lg',
+        '[&_h3]:font-bold [&_h3]:text-base [&_strong]:font-bold [&_em]:italic',
+        '[&_ul]:list-disc [&_ul]:ml-5 [&_ol]:list-decimal [&_ol]:ml-5',
+        '[&:empty]:before:content-[attr(data-placeholder)]',
+        '[&:empty]:before:text-gray-500 [&:empty]:before:pointer-events-none',
+        disabled ? 'opacity-50 cursor-not-allowed' : '',
+      ].join(' ')}
+    />
+  );
+}
+
 export default function PostsForm({ posts, setPosts, locked }) {
   const update = (index, field, value) => {
     setPosts((prev) => prev.map((p, i) => (i === index ? { ...p, [field]: value } : p)));
@@ -30,14 +85,17 @@ export default function PostsForm({ posts, setPosts, locked }) {
               </div>
 
               <div>
-                <label className="label">Nội dung</label>
-                <textarea
-                  placeholder={`Nội dung bài ${i + 1}...`}
-                  rows={4}
+                <label className="label">
+                  Nội dung{' '}
+                  <span className="text-gray-500 font-normal text-xs ml-1">
+                    (dán từ Google Docs / Word — giữ nguyên định dạng)
+                  </span>
+                </label>
+                <RichContentEditor
                   value={post.content}
                   disabled={locked}
-                  onChange={(e) => update(i, 'content', e.target.value)}
-                  className="input-field resize-y"
+                  placeholder={`Dán nội dung bài ${i + 1} vào đây...`}
+                  onChange={(html) => update(i, 'content', html)}
                 />
               </div>
             </div>

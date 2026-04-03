@@ -1,7 +1,18 @@
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { JobRequestSchema } from '../validation/schemas.js';
 import { startJob, getJob } from '../services/queue.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ACCOUNTS_FILE = path.resolve(__dirname, '../../data/accounts.json');
+
+function readAccounts() {
+  try { return JSON.parse(fs.readFileSync(ACCOUNTS_FILE, 'utf-8')); }
+  catch { return []; }
+}
 
 export const jobsRouter = Router();
 
@@ -16,10 +27,22 @@ jobsRouter.post('/', (req, res) => {
     });
   }
 
-  const { siteUrl, posts } = parsed.data;
-  const jobId = uuidv4();
+  const { siteUrl, accountIdx, posts } = parsed.data;
+  let { username, password } = parsed.data;
 
-  startJob(jobId, siteUrl, posts);
+  // Nếu chọn từ danh sách → resolve credentials từ file
+  if (accountIdx !== undefined) {
+    const accounts = readAccounts();
+    const account = accounts[accountIdx];
+    if (!account) {
+      return res.status(400).json({ error: `Không tìm thấy tài khoản #${accountIdx}` });
+    }
+    username = account.username;
+    password = account.password;
+  }
+
+  const jobId = uuidv4();
+  startJob(jobId, siteUrl, username, password, posts);
   console.log(`[jobs] Started job ${jobId} → ${siteUrl} (${posts.length} posts)`);
 
   return res.status(202).json({ jobId });
@@ -65,4 +88,26 @@ jobsRouter.get('/:id/stream', (req, res) => {
     clearInterval(heartbeat);
     job.listeners.delete(listener);
   });
+});
+
+// ── GET /api/jobs/:id/status (Polling fallback) ───────────────────────────
+jobsRouter.get('/:id/status', (req, res) => {
+  const { id } = req.params;
+  const job = getJob(id);
+
+  if (!job) {
+    return res.status(404).json({ error: 'Job not found' });
+  }
+
+  // Đếm số bài completed/failed từ results
+  const completed = job.results.filter(r => r.event === 'progress' && r.data.status === 'success').length;
+  const failed = job.results.filter(r => r.event === 'progress' && r.data.status === 'error').length;
+
+  if (job.status === 'done') {
+    return res.json({ status: 'completed', completed, failed });
+  } else if (job.status === 'error') {
+    return res.json({ status: 'failed', error: job.error || 'Unknown error', completed, failed });
+  } else {
+    return res.json({ status: 'running', completed, failed });
+  }
 });

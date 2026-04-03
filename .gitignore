@@ -1,9 +1,15 @@
 # Node
 node_modules/
 npm-debug.log*
+package-lock.json
 
 # Env files (never commit real credentials)
 server/.env
+server/data/settings.json
+
+# Data files
+server/data/
+data/
 
 # Build output
 client/dist/

@@ -6,17 +6,40 @@ import { runPbnJob } from './puppeteer.js';
  */
 const jobs = new Map();
 
+// ── Sequential job queue: chỉ 1 Puppeteer session chạy tại 1 thời điểm ──────
+// Mỗi job được xếp hàng; job tiếp theo chỉ bắt đầu sau khi job trước hoàn tất.
+let _isRunning = false;
+const _queue   = [];
+
+function _runNext() {
+  if (_isRunning || _queue.length === 0) return;
+  _isRunning = true;
+  const { jobId, siteUrl, username, password, posts, job, emit } = _queue.shift();
+
+  job.status = 'running';
+  console.log(`[queue] Bắt đầu job ${jobId} → ${siteUrl} (${posts.length} bài | ${_queue.length} job chờ)`);
+
+  runPbnJob(jobId, siteUrl, username, password, posts, emit)
+    .catch((err) => {
+      console.error(`[job:${jobId}] Lỗi:`, err.message);
+      emit('error', { message: err.message });
+    })
+    .finally(() => {
+      job.status = 'done';
+      // Clean up sau 10 phút
+      setTimeout(() => jobs.delete(jobId), 10 * 60 * 1000);
+      _isRunning = false;
+      _runNext(); // chạy job kế tiếp
+    });
+}
+
 /**
- * Start a new posting job (Puppeteer mode).
- *
- * @param {string} jobId
- * @param {string} siteUrl  - e.g. https://88vns.net
- * @param {Array}  posts    - [{ title, content }]
+ * Thêm job vào hàng đợi tuần tự (concurrency = 1).
  */
-export function startJob(jobId, siteUrl, posts) {
+export function startJob(jobId, siteUrl, username, password, posts) {
   const job = {
     id: jobId,
-    status: 'running',
+    status: 'queued',
     total: posts.length,
     completed: 0,
     failed: 0,
@@ -27,22 +50,14 @@ export function startJob(jobId, siteUrl, posts) {
   jobs.set(jobId, job);
 
   const emit = (event, data) => {
-    // Buffer events so late-connecting SSE clients can catch up
+    // Buffer events cho SSE client kết nối muộn
     job.results.push({ event, data });
     job.listeners.forEach((fn) => fn(event, data));
   };
 
-  // Run Puppeteer job in background (no await — non-blocking)
-  runPbnJob(jobId, siteUrl, posts, emit)
-    .catch((err) => {
-      console.error(`[job:${jobId}] Unexpected error:`, err.message);
-      emit('error', { message: err.message });
-    })
-    .finally(() => {
-      job.status = 'done';
-      // Clean up after 10 minutes
-      setTimeout(() => jobs.delete(jobId), 10 * 60 * 1000);
-    });
+  _queue.push({ jobId, siteUrl, username, password, posts, job, emit });
+  console.log(`[queue] Job ${jobId} xếp hàng (${_queue.length} chờ, đang chạy: ${_isRunning})`);
+  _runNext();
 }
 
 export function getJob(jobId) {
