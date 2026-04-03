@@ -116,12 +116,10 @@ export default function App() {
           <WorkflowPanel />
         )}
         
-        {/* ── TAB: ĐăNG BÀI (Tắt) ─────────────────────────────────────── */}
-        {/* {activeTab === 'post' && (
+        {/* ── TAB: ĐăNG BÀI (Tắt) ─────────────────────────────────────── 
+        {activeTab === 'post' && (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Left column */}
             <div className="flex flex-col gap-5">
-              {/* Step 1 */}
               <SiteSetup
                 siteUrl={siteUrl}
                 setSiteUrl={setSiteUrl}
@@ -133,19 +131,16 @@ export default function App() {
                 locked={running}
               />
 
-              {/* Step 2 — dynamic forms */}
               {formReady && (
                 <PostsForm posts={posts} setPosts={setPosts} locked={running} />
               )}
 
-              {/* Error */}
               {submitError && (
                 <p className="text-red-400 text-sm bg-red-950 border border-red-800 rounded px-3 py-2">
                   ⚠ {submitError}
                 </p>
               )}
 
-              {/* Start button */}
               {formReady && (
                 <button
                   onClick={handleStartJob}
@@ -159,7 +154,6 @@ export default function App() {
               )}
             </div>
 
-            {/* Right column — live log */}
             <div className="flex flex-col gap-4">
               <LogPanel events={events} summary={summary} total={posts.length} />
               {summary && (
@@ -174,16 +168,14 @@ export default function App() {
           </div>
         )} */}
 
-        {/* ── TAB: GENERATE BÀI (Tắt) ──────────────────────────────────── */}
-        {/* {activeTab === 'generate' && (
+        {/* ── TAB: GENERATE BÀI (Tắt) ──────────────────────────────────── 
+        {activeTab === 'generate' && (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr]">
-            {/* Left: generate controls */}
             <div className="bg-gray-900 rounded-xl border border-gray-800 p-5">
               <h2 className="text-base font-semibold mb-4">Generate bài viết AI</h2>
               <GeneratePanel onArticlesReady={() => setRefreshKey((k) => k + 1)} />
             </div>
 
-            {/* Right: preview & manage articles */}
             <div className="bg-gray-900 rounded-xl border border-gray-800 p-5">
               <h2 className="text-base font-semibold mb-4">Bài viết đã tạo</h2>
               <ArticlePreview onUseArticle={handleUseArticle} refreshKey={refreshKey} />
