@@ -6,20 +6,20 @@ Hệ thống tạo nội dung tự động với AI cho PBN (Private Blog Networ
 
 ---
 
-## ✨ Tính năng chính / Key Features
+##  Tính năng chính / Key Features
 
-- 🤖 **AI Article Generation**: Tạo bài viết SEO với OpenAI (GPT-4, GPT-4o-mini)
-- 🌏 **Bilingual Support**: Hỗ trợ tiếng Việt và tiếng Anh
-- 🎯 **EEAT Compliance**: Bài viết tuân thủ chuẩn Google EEAT
-- 📊 **Workflow Campaigns**: Quản lý chiến dịch tạo nội dung hàng loạt
-- 🖼️ **Image Integration**: Tự động tìm ảnh từ Pexels
-- 🔄 **WordPress Auto-Post**: Đăng bài tự động lên nhiều WordPress sites
-- 📈 **Queue Management**: Xử lý hàng loạt với hàng đợi thông minh
-- 🎨 **Rich Content**: Title variants, meta description, keyword optimization
+-  **AI Article Generation**: Tạo bài viết SEO với OpenAI (GPT-4, GPT-4o-mini)
+- **Bilingual Support**: Hỗ trợ tiếng Việt và tiếng Anh
+-  **EEAT Compliance**: Bài viết tuân thủ chuẩn Google EEAT
+-  **Workflow Campaigns**: Quản lý chiến dịch tạo nội dung hàng loạt
+-  **Image Integration**: Tự động tìm ảnh từ Pexels
+-  **WordPress Auto-Post**: Đăng bài tự động lên nhiều WordPress sites
+-  **Queue Management**: Xử lý hàng loạt với hàng đợi thông minh
+-  **Rich Content**: Title variants, meta description, keyword optimization
 
 ---
 
-## 📋 Yêu cầu / Prerequisites
+##  Yêu cầu / Prerequisites
 
 - **Node.js 20+**
 - **OpenAI API Key** — Đăng ký tại [platform.openai.com](https://platform.openai.com/)
@@ -28,7 +28,7 @@ Hệ thống tạo nội dung tự động với AI cho PBN (Private Blog Networ
 
 ---
 
-## 🚀 Cài đặt / Quick Start
+##  Cài đặt / Quick Start
 
 ### 1. Clone repository
 ```bash
@@ -77,21 +77,21 @@ Mở trình duyệt tại **http://localhost:5173**
 
 ---
 
-## 📖 Hướng dẫn sử dụng / Usage
+##  Hướng dẫn sử dụng / Usage
 
-### 🚀 Tab Chiến dịch / Workflow Campaign
+###  Tab Chiến dịch / Workflow Campaign
 
 1. **Chọn ngôn ngữ / Select language**: Tiếng Việt 🇻🇳 hoặc English 🇬🇧
 2. **Nhập danh sách chủ đề / Enter topic lists**: Mỗi dòng một chủ đề
 3. **Chọn template**: Chọn từ 500+ template có sẵn hoặc tự nhập
 4. **Tạo bài viết / Generate articles**: 
    - Chọn OpenAI model (gpt-4o-mini hoặc gpt-4)
-   - Click "🎯 Generate" để tạo từng bài
-   - Click "🚀 Chạy Pipeline: Generate All" để tạo hàng loạt
+   - Click " Generate" để tạo từng bài
+   - Click " Chạy Pipeline: Generate All" để tạo hàng loạt
 5. **Xem và chỉnh sửa / Review and edit**: Preview bài viết trước khi đăng
 6. **Đăng bài tự động / Auto-post**: Đăng lên WordPress sites đã cấu hình
 
-### 🎨 Chất lượng bài viết / Article Quality
+###  Chất lượng bài viết / Article Quality
 
 **Tiếng Việt:**
 - Độ dài: 1800+ từ
@@ -109,7 +109,7 @@ Mở trình duyệt tại **http://localhost:5173**
 
 ---
 
-## ⚙️ Cấu hình / Configuration
+##  Cấu hình / Configuration
 
 ### Environment Variables (`server/.env`)
 
@@ -124,7 +124,7 @@ Mở trình duyệt tại **http://localhost:5173**
 
 ---
 
-## 📁 Cấu trúc dự án / Project Structure
+##  Cấu trúc dự án / Project Structure
 
 ```
 Auto-PBN/
@@ -166,16 +166,16 @@ Auto-PBN/
 
 ---
 
-## 🔒 Bảo mật / Security Notes
+##  Bảo mật / Security Notes
 
-- ⚠️ **KHÔNG BAO GIỜ commit file `.env`** vào git
+-  **KHÔNG BAO GIỜ commit file `.env`** vào git
 - OpenAI API keys được lưu trong `.env` (đã gitignore)
 - Backend chỉ bind `127.0.0.1` (không expose ra network)
 - Không chia sẻ `server/.env` hoặc `server/data/` folder
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Lỗi "OpenAI API key not found"
 ```bash
@@ -198,16 +198,16 @@ OPENAI_API_KEY=sk-your-actual-key-here
 
 ---
 
-## 📝 Changelog
+##  Changelog
 
 ### Version 2.0 (April 2026)
-- ✅ Thêm hỗ trợ song ngữ (Vietnamese/English)
-- ✅ Workflow Campaign management
-- ✅ Queue-based bulk generation
-- ✅ Pexels image integration
-- ✅ EEAT-compliant article structure
-- ✅ 20 title format variants per language
-- ✅ UI simplification (chỉ hiển thị Workflow tab)
+-  Thêm hỗ trợ song ngữ (Vietnamese/English)
+-  Workflow Campaign management
+-  Queue-based bulk generation
+-  Pexels image integration
+-  EEAT-compliant article structure
+-  20 title format variants per language
+-  UI simplification (chỉ hiển thị Workflow tab)
 
 ### Version 1.0
 - WordPress posting automation
@@ -221,16 +221,16 @@ MIT License - Xem file LICENSE để biết thêm chi tiết
 
 ---
 
-## 👤 Author
+##  Author
 
 GitHub: [@Danh25204](https://github.com/Danh25204)
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Pull requests are welcome! For major changes, please open an issue first.
 
 ---
 
-**⚡ Pro tip:** Sử dụng `gpt-4o-mini` cho tốc độ nhanh và chi phí thấp. Dùng `gpt-4` khi cần chất lượng cao nhất.
+** Pro tip:** Sử dụng `gpt-4o-mini` cho tốc độ nhanh và chi phí thấp. Dùng `gpt-4` khi cần chất lượng cao nhất.
